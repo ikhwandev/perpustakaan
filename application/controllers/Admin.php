@@ -55,6 +55,24 @@ class Admin extends CI_Controller
         $this->load->view('layout/footer');
     }
 
+    public function edit()
+    {
+        $userSession = $this->session->data;
+        $tampil = $this->admin_model->getUser('user', $userSession);
+        $data = array(
+            'title' => 'My Profile',
+            'name' => $tampil['name'],
+            'email' => $tampil['email'],
+            'role_id' => $tampil['role_id'],
+            'image' => $tampil['image']
+        );
+
+        $this->load->view('layout/header', $data);
+        $this->load->view('layout/admin/sidebar', $data);
+        $this->load->view('layout/admin/edit', $data);
+        $this->load->view('layout/footer');
+    }
+
     public function menu()
     {
         $userSession = $this->session->data;

@@ -12,20 +12,19 @@
                         <i class="fa fa-bars"></i>
                     </button>
 
+
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
-                        
+
+
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?= $name; ?></span>
-                                <img class="img-profile rounded-circle" 
-                                    src="<?php echo base_url('assets/img/profile/') . $image;?>">
+                                <img class="img-profile rounded-circle" src="<?php echo base_url('assets/img/profile/') . $image; ?>">
                             </a>
                             <!-- Dropdown - User Information -->
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="userDropdown">
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
                                 <a class="dropdown-item" href="#">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profile
@@ -52,8 +51,7 @@
                 <!-- End of Topbar -->
 
                 <!-- Logout Modal-->
-                <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
+                <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -62,10 +60,11 @@
                                     <span aria-hidden="true">×</span>
                                 </button>
                             </div>
-                            <div class="modal-body">Pilih "Keluar" di bawah jika Anda siap mengakhiri sesi saat ini.</div>
+                            <div class="modal-body">Pilih "Keluar" di bawah jika Anda siap mengakhiri sesi saat ini.
+                            </div>
                             <div class="modal-footer">
                                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                                <a class="btn btn-primary" href="<?= base_url('auth/logout');?>">Keluar</a>
+                                <a class="btn btn-primary" href="<?= base_url('auth/logout'); ?>">Keluar</a>
                             </div>
                         </div>
                     </div>
@@ -79,27 +78,53 @@
                         <h1 class="h3 mb-0 text-gray-800"><?= $title; ?></h1>
                     </div>
 
+                    <div class="row">
+                    </div>
                     <!-- Content Row -->
                     <div class="row">
 
                         <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Earnings (Monthly)</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
+                        <div class="col-xl-4">
+                            <!-- Profile picture card-->
+                            <div class="card mb-4 mb-xl-0">
+                                <div class="card-header">Profile Picture</div>
+                                <div class="card-body text-center">
+                                    <!-- Profile picture image-->
+                                    <img class="img-account-profile rounded-circle mb-2 img-thumbnail" src="<?php echo base_url('assets/img/profile/') . $image ?>" alt="">
                                 </div>
                             </div>
                         </div>
-                  
+                        <div class="col-xl-8">
+                            <!-- Account details card-->
+                            <div class="card mb-4">
+                                <div class="card-header">Account Details</div>
+                                <div class="card-body">
+                                    <?= form_open_multipart('user/edit') ?>
+                                    <!-- Form Group (username)-->
+                                    <div class="mb-3">
+                                        <label class="small mb-1" for="email">Email</label>
+                                        <input class="form-control" id="email" name="email" type="text" value="<?= $email; ?>" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="small mb-1" for="name">Full name (nama akan tampil di
+                                            layar)</label>
+                                        <input class="form-control" id="name" name="name" type="text" placeholder="Enter your name" value="<?= $name; ?>">
+                                        <!-- alert data nama kosong -->
+                                        <?= form_error('name', '<label class="small mb-1 text-danger">', '</label>') ?>
+                                    </div>
+
+                                    <label class="small mb-1">Pilih gambar yang di upload</label>
+                                    <div class="custom-file mb-3">
+                                        <input type="file" class="custom-file-input" id="image" name="image">
+                                        <label class="custom-file-label" for="image">Choose file</label>
+                                    </div>
+                                    <!-- Save changes button-->
+                                    <button class="btn btn-primary" type="submit" value="upload">Simpan</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
                 <!-- /.container-fluid -->

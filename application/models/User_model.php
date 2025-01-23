@@ -10,4 +10,12 @@ class user_model extends CI_Model
         $this->session->userdata('email')])->row_array();
         return $query;
     }
+
+    //simpan gambar
+    function UpdateUserProfile($table, $data){
+        $this->db->set('name', $data);
+        $this->db->where('email', $data['email']);
+        $this->db->update($table, $data);
+}   
+
 }
