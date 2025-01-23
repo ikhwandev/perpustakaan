@@ -131,7 +131,7 @@ class User extends CI_Controller
         }
     }
 
-    // change password member
+    // change password
     public function changepassword()
     {
         $userSession = $this->session->data;
@@ -150,8 +150,9 @@ class User extends CI_Controller
 
             if ($this->form_validation->run() == FALSE) {
                 $this->load->view('layout/header', $data);
-                $this->load->view('layout/user/sidebar', $data);
-                $this->load->view('layout/user/changepassword', $data);
+                $this->load->view('layout/member/sidebar', $data);
+                $this->load->view('layout/member/topbar', $data);
+                $this->load->view('layout/member/changepassword', $data);
                 $this->load->view('layout/footer');
             } else {
                 $current_password = $this->input->post('current_password');
@@ -190,7 +191,7 @@ class User extends CI_Controller
                             'password' => $password_hash
                         ];
 
-                        $this->admin_model->ChangePassword('user', $value);
+                        $this->user_model->ChangePassword('user', $value);
                         $this->session->set_flashdata(
                             'message',
                             '<div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -204,7 +205,5 @@ class User extends CI_Controller
                     }
                 }
             }
-
-
     }
 }
