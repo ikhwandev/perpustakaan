@@ -20,10 +20,6 @@ class Admin extends CI_Controller
         $userSession = $this->session->data;
         $tampil = $this->admin_model->getUser('user', $userSession);
 
-        if ($tampil == []) {
-            redirect('auth');
-        } else {
-
             $data = array(
                 'title' => 'Dashboard',
                 'name' => $tampil['name'],
@@ -34,7 +30,7 @@ class Admin extends CI_Controller
             $this->load->view('layout/admin/sidebar', $data);
             $this->load->view('layout/admin/dashboard', $data);
             $this->load->view('layout/footer');
-        }
+
     }
 
     public function detail()
