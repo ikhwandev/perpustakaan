@@ -11,6 +11,14 @@ class admin_model extends CI_Model
         return $query;
     }
 
+    //Update Profile Akun
+    function UpdateUserProfile($table, $data)
+    {
+        $this->db->set('name', $data);
+        $this->db->where('email', $data['email']);
+        $this->db->update($table, $data);
+    }
+
     // get admin menu
     public function userMenu($table)
     {
@@ -54,10 +62,10 @@ class admin_model extends CI_Model
 
     //Inset submenu
     public function InsertsubModel($table, $data)
-    {   
+    {
         $query = $this->db->insert($table, $data);
-        return $query;      
-    } 
+        return $query;
+    }
 
     //Update submenu
     public function UpdatesubMenu($table, $data)
@@ -133,5 +141,13 @@ class admin_model extends CI_Model
             $this->db->delete('user_access_menu', $data);
         }
         return $query;
+    }
+
+    // change password
+    function ChangePassword($table, $data)
+    {
+        $this->db->set('password', $data['password']);
+        $this->db->where('email', $data['email']);
+        $this->db->update($table, $data);
     }
 }

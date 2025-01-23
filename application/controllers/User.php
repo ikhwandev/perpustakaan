@@ -37,6 +37,7 @@ class User extends CI_Controller
         }
     }
 
+    // Detail User Profile
     public function detail()
     {
         $userSession = $this->session->data;
@@ -55,6 +56,7 @@ class User extends CI_Controller
         $this->load->view('layout/footer');
     }
 
+    // Edit Profile 
     public function edit()
     {
         $userSession = $this->session->data;
@@ -127,5 +129,82 @@ class User extends CI_Controller
             );
             redirect('user/detail');
         }
+    }
+
+    // change password member
+    public function changepassword()
+    {
+        $userSession = $this->session->data;
+        $tampil = $this->user_model->getUser('user', $userSession);
+
+            $data = array(
+                'title' => 'Change Password',
+                'name' => $tampil['name'],
+                'role_id' => $tampil['role_id'],
+                'image' => $tampil['image']
+            );
+
+            $this->form_validation->set_rules('current_password', 'Current Password', 'required|trim');
+            $this->form_validation->set_rules('new_password1', 'New Password', 'required|trim|min_length[5]|matches[new_password2]');
+            $this->form_validation->set_rules('new_password2', 'Confirm New Password', 'required|trim|min_length[5]|matches[new_password1]');
+
+            if ($this->form_validation->run() == FALSE) {
+                $this->load->view('layout/header', $data);
+                $this->load->view('layout/user/sidebar', $data);
+                $this->load->view('layout/user/changepassword', $data);
+                $this->load->view('layout/footer');
+            } else {
+                $current_password = $this->input->post('current_password');
+                $new_password = $this->input->post('new_password1');
+                
+                if (!password_verify($current_password, $tampil['password'])) {
+                    $this->session->set_flashdata(
+                        'message',
+                        '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            Wrong Current Password!
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button> 
+                            </div>'
+                    );
+                    redirect('user/changepassword');             
+                } else {
+                    if ($current_password == $new_password ) {
+                        $this->session->set_flashdata(
+                            'message',
+                            '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                Password must not be same as current password!
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button> 
+                                </div>'
+                        );
+                        redirect('user/changepassword');
+                    } else {
+                        // password Ok
+                        $password_hash = password_hash($new_password, PASSWORD_DEFAULT);
+
+                        //simpan data fetch
+                        $value = [
+                            'email' => $tampil['email'],
+                            'password' => $password_hash
+                        ];
+
+                        $this->admin_model->ChangePassword('user', $value);
+                        $this->session->set_flashdata(
+                            'message',
+                            '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                                Password Changed!
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button> 
+                                </div>'
+                        );
+                        redirect('user/changepassword');
+                    }
+                }
+            }
+
+
     }
 }

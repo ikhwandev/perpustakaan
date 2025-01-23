@@ -28,11 +28,13 @@ class Admin extends CI_Controller
             );
             $this->load->view('layout/header', $data);
             $this->load->view('layout/admin/sidebar', $data);
+            $this->load->view('layout/admin/topbar', $data);
             $this->load->view('layout/admin/dashboard', $data);
             $this->load->view('layout/footer');
 
     }
 
+    // Detail User Profile
     public function detail()
     {
         $userSession = $this->session->data;
@@ -47,26 +49,85 @@ class Admin extends CI_Controller
 
         $this->load->view('layout/header', $data);
         $this->load->view('layout/admin/sidebar', $data);
+        $this->load->view('layout/admin/topbar', $data);
         $this->load->view('layout/admin/detail', $data);
         $this->load->view('layout/footer');
     }
 
+    // Edit Profile 
     public function edit()
     {
         $userSession = $this->session->data;
         $tampil = $this->admin_model->getUser('user', $userSession);
         $data = array(
-            'title' => 'My Profile',
+            'title' => 'MY Profile',
             'name' => $tampil['name'],
             'email' => $tampil['email'],
             'role_id' => $tampil['role_id'],
             'image' => $tampil['image']
         );
 
-        $this->load->view('layout/header', $data);
-        $this->load->view('layout/admin/sidebar', $data);
-        $this->load->view('layout/admin/edit', $data);
-        $this->load->view('layout/footer');
+        $this->form_validation->set_rules('name', 'Full Name', 'required|trim', [
+            'required' => 'Data Nama Lengkap belum di input!'
+        ]);
+
+
+        if ($this->form_validation->run() == FALSE) {
+            $this->load->view('layout/header', $data);
+            $this->load->view('layout/admin/sidebar', $data);
+            $this->load->view('layout/admin/topbar', $data);
+            $this->load->view('layout/admin/edit', $data);
+            $this->load->view('layout/footer');
+        } else {
+
+            $email = $this->input->post('email');
+            $name = $this->input->post('name');
+
+            //cek jika ada gambar yang akan diupload
+            $upload_image = $_FILES['image']['name'];
+
+            //cek jenis file diupload
+            if ($upload_image) {
+                $config['allowed_types'] = 'img|png|jpg|svg';
+                $config['max_size']     = 2000;
+                $config['max_width']    = 160;
+                $config['max_height']   = 160;
+                $config['upload_path']  = './assets/img/profile/';
+
+                $this->load->library('upload', $config);
+
+                //jika tidak ada gambar
+                if (!$this->upload->do_upload('image')) {
+
+
+                    // jika ada gambar
+                } else {
+                    $old_image = $data['image'];
+
+                    $this->upload->do_upload('image');
+                    $new_image = $this->upload->data('file_name');
+                    $this->db->set('image', $new_image);
+                }
+            }
+
+            $value = [
+                'email' => $email,
+                'name' => $name
+            ];
+
+            //update user
+            $this->admin_model->UpdateUserProfile('user', $value);
+            $this->session->set_flashdata(
+                'message',
+                '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                    Profile baru tersimpan!
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button> 
+                    </div>'
+            );
+            redirect('admin/detail');
+        }
     }
 
     public function menu()
@@ -96,6 +157,7 @@ class Admin extends CI_Controller
         if ($this->form_validation->run() == false) {
             $this->load->view('layout/header', $data);
             $this->load->view('layout/admin/sidebar', $data);
+            $this->load->view('layout/admin/topbar', $data);
             $this->load->view('layout/admin/menu', $data);
             $this->load->view('layout/footer');
         } else {
@@ -216,6 +278,7 @@ class Admin extends CI_Controller
         if ($this->form_validation->run() == false) {
             $this->load->view('layout/header', $data);
             $this->load->view('layout/admin/sidebar', $data);
+            $this->load->view('layout/admin/topbar', $data);
             $this->load->view('layout/admin/submenu', $data);
             $this->load->view('layout/footer');
         } else {
@@ -363,6 +426,7 @@ class Admin extends CI_Controller
             if ($this->form_validation->run() == false) {
                 $this->load->view('layout/header', $data);
                 $this->load->view('layout/admin/sidebar', $data);
+                $this->load->view('layout/admin/topbar', $data);
                 $this->load->view('layout/admin/role', $data);
                 $this->load->view('layout/footer');
             } else {
@@ -447,6 +511,7 @@ class Admin extends CI_Controller
         redirect('admin/role');
     } 
 
+    // role akses menu
     public function roleAccess($id)
     {
         $userSession = $this->session->data;
@@ -474,11 +539,13 @@ class Admin extends CI_Controller
 
             $this->load->view('layout/header', $data);
             $this->load->view('layout/admin/sidebar', $data);
+            $this->load->view('layout/admin/topbar', $data);
             $this->load->view('layout/admin/role-access', $data);
             $this->load->view('layout/footer');
         }
     }
 
+    // change access role
     public function changeaccess()
     {
         $menu_id = $this->input->post('menuId');
@@ -501,5 +568,83 @@ class Admin extends CI_Controller
                 </button>
             </div>'
         );
+    }
+
+    // change password
+    public function changepassword()
+    {
+        $userSession = $this->session->data;
+        $tampil = $this->admin_model->getUser('user', $userSession);
+
+            $data = array(
+                'title' => 'Change Password',
+                'name' => $tampil['name'],
+                'role_id' => $tampil['role_id'],
+                'image' => $tampil['image']
+            );
+
+            $this->form_validation->set_rules('current_password', 'Current Password', 'required|trim');
+            $this->form_validation->set_rules('new_password1', 'New Password', 'required|trim|min_length[5]|matches[new_password2]');
+            $this->form_validation->set_rules('new_password2', 'Confirm New Password', 'required|trim|min_length[5]|matches[new_password1]');
+
+            if ($this->form_validation->run() == FALSE) {
+                $this->load->view('layout/header', $data);
+                $this->load->view('layout/admin/sidebar', $data);
+                $this->load->view('layout/admin/topbar', $data);
+                $this->load->view('layout/admin/changepassword', $data);
+                $this->load->view('layout/footer');
+            } else {
+                $current_password = $this->input->post('current_password');
+                $new_password = $this->input->post('new_password1');
+                
+                if (!password_verify($current_password, $tampil['password'])) {
+                    $this->session->set_flashdata(
+                        'message',
+                        '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            Wrong Current Password!
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button> 
+                            </div>'
+                    );
+                    redirect('admin/changepassword');             
+                } else {
+                    if ($current_password == $new_password ) {
+                        $this->session->set_flashdata(
+                            'message',
+                            '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                Password must not be same as current password!
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button> 
+                                </div>'
+                        );
+                        redirect('admin/changepassword');
+                    } else {
+                        // password Ok
+                        $password_hash = password_hash($new_password, PASSWORD_DEFAULT);
+
+                        //simpan data fetch
+                        $value = [
+                            'email' => $tampil['email'],
+                            'password' => $password_hash
+                        ];
+
+                        $this->admin_model->ChangePassword('user', $value);
+                        $this->session->set_flashdata(
+                            'message',
+                            '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                                Password Changed!
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button> 
+                                </div>'
+                        );
+                        redirect('admin/changepassword');
+                    }
+                }
+            }
+
+
     }
 }

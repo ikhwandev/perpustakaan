@@ -11,11 +11,19 @@ class user_model extends CI_Model
         return $query;
     }
 
-    //simpan gambar
-    function UpdateUserProfile($table, $data){
+    //Update Profile Akun
+    function UpdateUserProfile($table, $data)
+    {
         $this->db->set('name', $data);
         $this->db->where('email', $data['email']);
         $this->db->update($table, $data);
-}   
+    }
 
+    // change password
+    function ChangePassword($table, $data)
+    {
+        $this->db->set('password', $data['password']);
+        $this->db->where('email', $data['email']);
+        $this->db->update($table, $data);
+    }
 }
