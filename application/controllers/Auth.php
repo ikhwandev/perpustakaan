@@ -43,6 +43,7 @@ class Auth extends CI_Controller
 			];
 
 			$token = base64_encode(random_bytes(32));
+
 			$user_token = [
 				'email' => $email,
 				'token' => $token,
@@ -51,15 +52,18 @@ class Auth extends CI_Controller
 
 			$this->load->model('auth_model');
 			$this->load->model('user_token_model');
+
+			//insert user ke db user
 			$this->auth_model->insertRegist('user',$data);
+
+			//insert token ke db user_token
 			$this->user_token_model->insertToken('user_token',$user_token);
 
 			$this->_sendEmail($token, 'verify');
 
-
 			$this->session->set_flashdata('pesan_regist', 
 				'<div class="alert alert-success" role="alert">
-					Selamat! akun anda telah di registrasi silahkan login.
+					Selamat! akun anda telah di buat silahkan aktivasi akun!
 				</div>');
 			redirect('auth');
 		}
@@ -91,10 +95,9 @@ class Auth extends CI_Controller
 			//Content
 			$mail->isHTML(true);                                  //Set email format to HTML
 			$mail->Subject = 'Informasi Verifikasi Akun';
-			$mail->Body    = 'Klik link ini untuk verifikasi akun anda : <a href ="' . base_url() . 'auth/verify?email=' . $this->input->post('email') . '$token=' . urlencode($token) . '" >Aktivasi</a>';
+			$mail->Body    = 'Klik link ini untuk verifikasi akun anda : <a href ="' . base_url() . 'auth/verify?email=' . $this->input->post('email') . '&token=' . $token . '" >Aktivasi</a>';
 		}
 
-	
 		$mail->send();
 		echo 'Message has been sent';
 	} catch (Exception $e) {
@@ -102,7 +105,67 @@ class Auth extends CI_Controller
 		}
 	}
 
+	// masih pr verifikasi user dan token
+	public function verify()
+	{
+		$email = $this->input->get('email');
+		$token = $this->input->get('token');
 
+		$user = $this->db->get_where('user', ['email' => $email])->row_array();
+
+		// jika ada user regist
+		if ($user) {
+			
+			$user_token = $this->db->get_where('user_token', ['token' => $token])->row_array();
+
+			// jika user token ada
+			if ($user_token) {
+
+				// jika user create kurang dari 24 jam
+				if (time() - $user_token['date_created'] < (60*60*24)) {
+					$this->db->set('is_active', 1);
+					$this->db->where('email', $email);
+					$this->db->update('user');
+
+					$this->db->delete('user_token', ['email' => $email]);
+				
+					$this->session->set_flashdata('pesan_regist', 
+					'<div class="alert alert-success" role="alert">
+						Email dengan nama '. $email .' telah diaktivasi! Silahkan login
+					</div>');
+					redirect('auth');	
+
+				//jika create akun > 24 jam dan hapus user
+				} else {
+					
+					$this->db->delete('user', ['email' => $email]);
+					$this->db->delete('user_token', ['email' => $email]);
+
+					$this->session->set_flashdata('pesan_regist', 
+					'<div class="alert alert-danger" role="alert">
+						Token expired!
+					</div>');
+					redirect('auth');	
+				}
+
+			// cek token valid atau tidak
+			} else {
+				$this->session->set_flashdata('pesan_regist', 
+				'<div class="alert alert-danger" role="alert">
+					Aktivasi akun gagal, Token tidak valid!
+				</div>');
+				redirect('auth');	
+			}
+
+		// cek email valid atau tidak
+		} else {
+			$this->session->set_flashdata('pesan_regist', 
+			'<div class="alert alert-danger" role="alert">
+				Aktivasi akun gagal, email salah!
+			</div>');
+			redirect('auth');
+		}
+	}
 
 	public function login()
 	{

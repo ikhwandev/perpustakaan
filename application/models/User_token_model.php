@@ -8,4 +8,5 @@ class user_token_model extends CI_Model
         $query = $this->db->insert($table, $data);
         return $query;
     }
+
 }
