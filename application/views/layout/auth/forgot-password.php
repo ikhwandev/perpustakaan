@@ -19,27 +19,20 @@
             <img src="<?= base_url() . 'assets/img/icon.png'; ?>" alt="">
         </div>
         <div class="text-center mt-4 name">
-            LOGIN
+            <h6>Forgot your Password ?</h6>
         </div>
-        <form class="p-3 mt-3" method="post" action="<?= base_url('auth/login')?>">
+        <form class="p-4 mt-4" method="post" action="<?= base_url('auth/forgotPassword')?>">
             <div class="form-field d-flex align-items-center">
                 <span class="far fa-user"></span>
                 <input type="text" name="email" placeholder="Email">
             </div>
             <div>
-                 <small class="text-danger"><?= form_error('email')?></small>
+                <small class="text-danger"><?= form_error('email')?></small>
             </div>
-            <div class="form-field d-flex align-items-center">
-                <span class="fas fa-key"></span>
-                <input type="password" name="password" placeholder="Password">
-            </div>
-            <div>
-                 <small class="text-danger"><?= form_error('password')?></small>
-            </div>
-            <button type="submit" value="" class="btn mt-3">Login</button>
+            <button type="submit" value="" class="btn mt-3">Reset Password</button>
         </form>
-        <div class="text-center fs-6">
-            <a href="<?= base_url('auth/forgotPassword') ?>">Forget password?</a> or <a href="<?= base_url('auth/registration')?>">Register</a>
+        <div class="text-center">
+            <a href="<?= base_url('auth') ?>" class="small">Back to Login</a>
         </div>
     </div>
 </body>

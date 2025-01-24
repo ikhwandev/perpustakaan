@@ -19,28 +19,28 @@
             <img src="<?= base_url() . 'assets/img/icon.png'; ?>" alt="">
         </div>
         <div class="text-center mt-4 name">
-            LOGIN
+            <h5>Change your password for</h5>
         </div>
-        <form class="p-3 mt-3" method="post" action="<?= base_url('auth/login')?>">
+        <div class="text-center">
+        <small><?= $this->session->userdata('reset_email') ?></small>
+        </div>
+        <form class="p-2 mt-4" method="post" action="<?= base_url('auth/changePassword')?>">
             <div class="form-field d-flex align-items-center">
                 <span class="far fa-user"></span>
-                <input type="text" name="email" placeholder="Email">
+                <input type="password" name="password1" placeholder="Enter New Password">
             </div>
             <div>
-                 <small class="text-danger"><?= form_error('email')?></small>
+                <small class="text-danger"><?= form_error('password1')?></small>
             </div>
             <div class="form-field d-flex align-items-center">
-                <span class="fas fa-key"></span>
-                <input type="password" name="password" placeholder="Password">
+                <span class="far fa-user"></span>
+                <input type="password" name="password2" placeholder="Repeat New Password">
             </div>
             <div>
-                 <small class="text-danger"><?= form_error('password')?></small>
+                <small class="text-danger"><?= form_error('password2')?></small>
             </div>
-            <button type="submit" value="" class="btn mt-3">Login</button>
+            <button type="submit" value="" class="btn mt-3">Change Password</button>
         </form>
-        <div class="text-center fs-6">
-            <a href="<?= base_url('auth/forgotPassword') ?>">Forget password?</a> or <a href="<?= base_url('auth/registration')?>">Register</a>
-        </div>
     </div>
 </body>
 

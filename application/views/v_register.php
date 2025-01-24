@@ -51,7 +51,13 @@
             <button type="submit" value="" class="btn mt-2">REGISTER</button>
         </form>
         <div class="text-center fs-6 mt-2">
-            <a href="<?= base_url('auth')?>">Back To Login Area</a>
+            <div class="row justify-content-md-center">
+                <div class="col-md-auto"><a href="<?= base_url('auth')?>">Back To Login Area</a></div>
+                <div class="col-md-auto"><small>or</small></div>
+                <div class="col-md-auto"><a href="<?= base_url('auth/forgotPassword')?>">Forgot Password</a></div>
+            </div>    
+        
+        
         </div>
     </div>
 </body>
