@@ -4,8 +4,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
-use PHPMailer\PHPMailer\OAuth;
-use PHPMailer\PHPMailer\POP3;
+
 
 //Load Composer's autoloader
 require 'vendor/autoload.php';
