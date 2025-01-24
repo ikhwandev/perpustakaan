@@ -80,13 +80,13 @@ class Auth extends CI_Controller
 		 $mail->isSMTP();                                            //Send using SMTP
 		 $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
 		 $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-		 $mail->Username   = 'muhchoirulikhwan21@gmail.com';                     //SMTP username
-		 $mail->Password   = 'aetcjlpksbivtseo';                               //SMTP password
+		 $mail->Username   = '';                     //SMTP username
+		 $mail->Password   = '';                               //SMTP password
 		//  $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;            //Enable implicit TLS encryption
 		 $mail->Port       = 587;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 		
 		//Recipients
-		$mail->setFrom('muhchoirulikhwan21@gmail.com', 'Info Verifikasi Akun');
+		$mail->setFrom('', 'Info Verifikasi Akun');
 		$mail->addAddress($this->input->post('email'));     //Add a recipient
 
 		if ($type == 'verify') {
